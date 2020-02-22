@@ -1,0 +1,120 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+convertToMeters 1;
+
+xMin   45; 
+xMax  167; 
+
+yMin  58; 
+yMax  185; 
+
+zMin     65;  
+zMax     70;
+
+cellsize 0.30;
+
+nbDirX       #calc "floor((($xMax)-($xMin))/$cellsize)";
+nbDirY       #calc "floor((($yMax)-($yMin))/$cellsize)";
+nbDirZ       #calc "floor((($zMax)-($zMin))/$cellsize)";
+
+vertices
+(
+ ($xMin  $yMin   $zMin    ) // 0
+ ($xMin  $yMin   $zMax    ) // 1
+
+ ($xMax  $yMin   $zMin    ) // 2
+ ($xMax  $yMin   $zMax    ) // 3
+
+ ($xMin  $yMax   $zMin    ) // 4
+ ($xMin  $yMax   $zMax    ) // 5
+
+ ($xMax  $yMax   $zMin    ) // 6
+ ($xMax  $yMax   $zMax    ) // 7
+
+);
+
+blocks
+(
+ hex ( 0  2  6  4  1  3  7  5) ($nbDirX $nbDirY $nbDirZ)   simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    xmin
+    {
+        type patch;
+        faces
+        (
+            (1 0 4 5)
+        );
+    }
+    
+    xmax
+    {
+        type patch;
+        faces
+        (
+            (2 3 7 6)
+        );
+    }
+    
+    top
+    {
+        type symmetryPlane;
+        faces
+        (
+            (1 5 7 3)
+        );
+    }
+    
+    wall_bottom
+    {
+        type wall;
+        faces
+        (
+            (0 4 6 2)
+        );
+    }
+    
+    wall_ymax
+    {
+      type wall;
+        faces
+        (
+            (4 5 7 6)
+        );
+    }
+    
+    wall_ymin
+    {
+      type wall;
+        faces
+        (
+            (0 1 3 2)
+        );
+    }
+
+);
+    
+mergePatchPairs
+(
+);

@@ -1,0 +1,157 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMesh true; 
+snap            true; 
+addLayers       false;
+
+geometry
+{
+    bathy.stl
+    {
+        type        triSurfaceMesh;
+	    name        wall_bathy;
+    }
+    
+    mitisBoundary.stl
+    {
+        type        triSurfaceMesh;
+	    name        mitis;
+    }
+    
+    neigetteBoundary.stl
+    {
+        type        triSurfaceMesh;
+	    name        neigette;
+    }
+    
+    nearDownstream.stl
+    {
+        type        triSurfaceMesh;
+	    name        downstream;
+    }
+};
+
+castellatedMeshControls
+{
+    maxLocalCells 25000000;
+    maxGlobalCells 10000000;
+    minRefinementCells 0;
+    maxLoadUnbalance 0.10;
+    nCellsBetweenLevels 3;
+
+    features
+    (
+    );
+
+    refinementSurfaces
+    {
+        wall_bathy
+        {
+            level (1 1);
+        }
+        mitis
+        {
+            level (1 1);
+        }
+        neigette
+        {
+            level (1 1);
+        }
+        downstream
+        {
+            level (1 1);
+        }
+    }
+
+    resolveFeatureAngle 30;
+
+    refinementRegions
+    {
+       /*refinementBoxMixing
+       {
+         mode inside;
+         levels ((0.0 2));
+       }*/
+    }
+    
+    locationInMesh (100 95 67.5);
+    allowFreeStandingZoneFaces true;
+}
+
+snapControls
+{
+    nSmoothPatch 3;
+    tolerance 4.0;
+    nSolveIter 30;
+    nRelaxIter 5;
+    nFeatureSnapIter 10; //10;
+}
+
+addLayersControls
+{
+    relativeSizes true;
+
+    layers
+    {
+    }
+
+    expansionRatio 1.0;
+    finalLayerThickness 0.3;
+    minThickness 0.01; 
+
+    nGrow 0;
+
+    featureAngle 180; 
+    nRelaxIter 5;
+    nSmoothSurfaceNormals 1;
+    nSmoothNormals 3;
+    nSmoothThickness 10;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedianAxisAngle 90;
+    nBufferCellsNoExtrude 0;
+    nLayerIter 50;
+}
+
+meshQualityControls
+{
+    maxNonOrtho 65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave 80;
+    minVol 1e-13;
+    minTetQuality 1e-30;
+    minArea -1;
+    minTwist 0.05;
+    minDeterminant 0.001;
+    minFaceWeight 0.05;
+    minVolRatio 0.01;
+    minTriangleTwist -1;
+    nSmoothScale 4;
+    errorReduction 0.75;
+}
+
+writeFlags
+(
+    scalarLevels    
+);
+
+
+mergeTolerance 1e-6;
+
+
+// ************************************************************************* //

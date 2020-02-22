@@ -1,0 +1,13 @@
+#!/bin/bash
+
+rm -r 0
+rm -r pro*
+foamCleanPolyMesh
+foamListTimes -rm
+
+blockMesh
+decomposePar
+mpirun -np 4 snappyHexMesh -overwrite -parallel
+
+reconstructParMesh -constant
+rm -r pro*
